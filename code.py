@@ -1,3 +1,16 @@
+import itertools
+import string
+import time
+import os
+from tqdm import tqdm
+
+CHARACTERS = string.ascii_letters + string.digits + string.punctuation
+PASSWORD_LENGTH = 6
+LAST_PASSWORD_FILE = "D:/Password program/6_digit/last_password.txt"
+PASSWORDS_FILE1 = "D:/Password program/6_digit/generated_passwords(6-Digit).txt"
+PASSWORDS_FILE2 = "D:/Password program/6_digit/generated_passwords(I-7_digit).txt"
+
+
 def generate_passwords(start_index):
     start_time = time.time()
     total_passwords = len(CHARACTERS) ** PASSWORD_LENGTH
@@ -43,3 +56,33 @@ def save_password_chunk(start_index, password_chunk):
 
     except Exception as e:
         print(f"Error saving passwords or last password index: {e}")
+
+
+def get_elapsed_time(start_time):
+    elapsed_time = time.time() - start_time
+    return f"{elapsed_time:.2f} s"
+
+
+def main():
+    start_index = 0
+
+    if os.path.exists(LAST_PASSWORD_FILE):
+        with open(LAST_PASSWORD_FILE, "r+") as file:
+            last_line = None
+            for line in file:
+                last_line = line.strip()
+            last_password = last_line
+
+        print(f"Last password index in the file: '{last_password}'")
+
+        try:
+            start_index = int(last_password)
+        except ValueError:
+            print("Invalid last password index, starting from scratch.")
+            start_index = 0
+
+    generate_passwords(start_index)
+
+
+if __name__ == "__main__":
+    main()
